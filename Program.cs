@@ -25,7 +25,7 @@ class Program
 
         void Admin()
         {
-            void Check(string file)
+            void CheckBool(string file)
             {
                 if (!File.Exists(file))
                 {
@@ -39,7 +39,7 @@ class Program
                     
                 }
             }
-            Check(PrintOnOff);
+            CheckBool(PrintOnOff);
         }
         void FileSystem()
         {
@@ -78,6 +78,13 @@ class Program
             {
                 Console.BackgroundColor = ConsoleColor.Red;
                 Console.ForegroundColor = ConsoleColor.White;
+                Console.Clear();
+            }
+
+            if (section == "Main Menu")
+            {
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
                 Console.Clear();
             }
             if (section == "Scoring")
@@ -134,7 +141,7 @@ class Program
                 Console.WriteLine("| Score | Exit |");
                 Console.WriteLine("----------------");
                 var ReadyState = Console.ReadLine();
-                while (ReadyState == "Score")
+                if (ReadyState == "Score")
                 {
                     ScorePoints();
                     Scoring();
@@ -227,23 +234,11 @@ class Program
 
                     if (Userinput == "Exit")
                     {
-                        TeamManagement();
+                        MainMenu();
                     }
                 }
                 Styling("Team Management");
-                Console.WriteLine("---------------");
-                Console.WriteLine("| Menu | Exit |");
-                Console.WriteLine("---------------");
-                var ReadyState = Console.ReadLine();
-                while (ReadyState == "Menu")
-                {
-                    MainTeamMenu();
-                }
-
-                if (ReadyState == "Exit")
-                {
-                    MainMenu();
-                }
+                MainTeamMenu();
             }
 
             void Settings()
@@ -301,6 +296,7 @@ class Program
                 }
                 MainMenuSettings();
             }
+            Styling("Main Menu");
             Console.WriteLine("---------------------------------------------");
             Console.WriteLine("| Score | Team Management | Settings | Exit |");
             Console.WriteLine("---------------------------------------------");
@@ -326,6 +322,7 @@ class Program
         }
         void StartPage()
         {
+            Styling("Start Page");
             Console.WriteLine("----------------");
             Console.WriteLine("| Start | Exit |");
             Console.WriteLine("----------------");
@@ -344,6 +341,6 @@ class Program
         Admin();
         LogSystem("Program Has Started");
         StartPage();
-        LogSystem("Program Has Ended");    
+        LogSystem("Program Has Ended");
     }
 }
