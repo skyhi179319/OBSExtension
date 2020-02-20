@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 namespace OBSExtension
 {
     class Program
@@ -9,6 +10,7 @@ namespace OBSExtension
             // Files
             string basename = Environment.UserName;
             string LogFile = @"C:\Users/" + basename + "/OBS/System/Logs/Log.txt";
+            // Please Make Home Score Your Team Main Score For Analysis To Work Properly
             string HomeScore = @"C:\Users/" + basename + "/OBS/Teams/HomeScore.txt";
             string AwayScore = @"C:\Users/" + basename + "/OBS/Teams/AwayScore.txt";
             string HomeName = @"C:\Users/" + basename + "/OBS//Teams/HomeName.txt";
@@ -18,7 +20,23 @@ namespace OBSExtension
             string CheckScoreOnOff = @"C:\Users/" + basename + "/OBS/System/Settings/CheckScore_On_Off.txt";
             string QuarterMax = @"C:\Users/" + basename + "/OBS/System/Settings/Quarter_Max.txt";
             string ScoreMax = @"C:\Users/" + basename + "/OBS/System/Settings/Score_Max.txt";
+            string PrintScoreTimeout = @"C:\Users/" + basename + "/OBS/System/Settings/Print_Score_Timeout.txt";
+            string PrintScoreTimeoutOnOff = @"C:\Users/" + basename + "/OBS/System/Settings/Print_Score_Timeout_On_Off.txt";
             string ScoreMaxDifference = @"C:\Users/" + basename + "/OBS/System/Settings/Score_Max_Difference.txt";
+            string PerQuarter = @"C:\Users/" + basename + "/OBS/Analysis/Points_Average_Per_Quarter.Analysis";
+
+            void Timing(bool enabled,int secs)
+            {
+                if (enabled == true)
+                {
+                    Thread.Sleep(secs * 1000);
+                }
+
+                if (enabled == false)
+                {
+                    Console.ReadKey();
+                }
+            }
             void CheckFile(string file)
             {
                 if (!File.Exists(file))
@@ -28,7 +46,6 @@ namespace OBSExtension
                     stream.Close();
                 }
             }
-
             void Admin()
             {
                 void CheckBool(string file)
@@ -88,11 +105,40 @@ namespace OBSExtension
                         
                     }
                 }
+                void CheckAnalysis(string file){
+                    if (!File.Exists(file))
+                    {
+                        StreamWriter stream;
+                        stream = File.CreateText(file);
+                        stream.Close();
+                    }
+                    if (File.Exists(file))
+                    {
+                        
+                    }
+                }
+                void CheckPrintTimeout(string file)
+                {
+                    if (!File.Exists(file))
+                    {
+                        StreamWriter stream;
+                        stream = File.CreateText(file);
+                        stream.WriteLine("5");
+                        stream.Close();
+                    }
+                    if (File.Exists(file))
+                    {
+                        
+                    }
+                }
                 CheckBool(CheckScoreOnOff);
                 CheckBool(PrintOnOff);
                 CheckQuarter(QuarterMax);
                 CheckMaxScore(ScoreMax);
                 CheckMaxScoreDifference(ScoreMaxDifference);
+                CheckAnalysis(PerQuarter);
+                CheckPrintTimeout(PrintScoreTimeout);
+                CheckBool(PrintScoreTimeoutOnOff);
             }
             void FileSystem()
             {
@@ -109,6 +155,7 @@ namespace OBSExtension
                 CheckDirectories(@"C:\Users/" + basename + "/OBS/Teams");
                 CheckDirectories(@"C:\Users/" + basename + "/OBS/Teams/Settings");
                 CheckDirectories(@"C:\Users/" + basename + "/OBS/System/Settings");
+                CheckDirectories(@"C:\Users/" + basename + "/OBS/Analysis");
                 CheckFile(LogFile);
                 CheckFile(HomeScore);
                 CheckFile(AwayScore);
@@ -189,6 +236,10 @@ namespace OBSExtension
                         int home = int.Parse(File.ReadAllText(HomeScore)) - int.Parse(File.ReadAllText(AwayScore));
                         int away = int.Parse(File.ReadAllText(AwayScore)) - int.Parse(File.ReadAllText(HomeScore));
                         int max = int.Parse(File.ReadAllText(ScoreMaxDifference));
+                        int HomeScoreNumber = int.Parse(File.ReadAllText(HomeScore));
+                        int AwayScoreNumber = int.Parse(File.ReadAllText(HomeScore));
+                        int HomeCac = HomeScoreNumber + points;
+                        int AwayCac = AwayScoreNumber + points;
                         if (team == "Home")
                         {
                             if (home - away < max)
@@ -197,7 +248,7 @@ namespace OBSExtension
                                 {
                                     StreamWriter write;
                                     write = File.CreateText(HomeScore);
-                                    write.WriteLine(points);
+                                    write.WriteLine(HomeCac);
                                     write.Close();
                                 }
                             }
@@ -211,7 +262,7 @@ namespace OBSExtension
                                 {
                                     StreamWriter write;
                                     write = File.CreateText(AwayScore);
-                                    write.WriteLine(points);
+                                    write.WriteLine(AwayCac);
                                     write.Close();
                                 }
                             }
@@ -229,12 +280,31 @@ namespace OBSExtension
                         var points = Console.ReadLine();
                         Score(team, int.Parse(points));
                     }
+
+                    void Reset()
+                    {
+                        void ResetFiles(string file)
+                        {
+                            StreamWriter write;
+                            write = File.CreateText(file);
+                            write.WriteLine("0");
+                            write.Close();
+                        }
+                        ResetFiles(HomeScore);
+                        ResetFiles(AwayScore);
+                    }
+
+                    void print(int home, int away)
+                    {
+                        string info = home + "-" + away;
+                        Console.WriteLine(info);
+                    }
                     Styling("Scoring");
                     bool ScoreBool = bool.Parse(File.ReadAllText(CheckScoreOnOff));
                     CheckScore(ScoreBool);
-                    Console.WriteLine("----------------");
-                    Console.WriteLine("| Score | Exit |");
-                    Console.WriteLine("----------------");
+                    Console.WriteLine("--------------------------------");
+                    Console.WriteLine("| Score | Reset | Print | Exit |");
+                    Console.WriteLine("--------------------------------");
                     var ReadyState = Console.ReadLine();
                     if (ReadyState == "Score")
                     {
@@ -242,6 +312,20 @@ namespace OBSExtension
                         Scoring();
                     }
 
+                    if (ReadyState == "Reset")
+                    {
+                        Reset();
+                        Scoring();
+                    }
+
+                    if (ReadyState == "Print")
+                    {
+                        print(int.Parse(File.ReadAllText(HomeScore)),int.Parse(File.ReadAllText(AwayScore)));
+                        bool PrintBool = bool.Parse(File.ReadAllText(PrintScoreTimeoutOnOff));
+                        int time = int.Parse(File.ReadAllText(PrintScoreTimeout));
+                        Timing(PrintBool,time);
+                        Scoring();
+                    }
                     if (ReadyState == "Exit")
                     {
                         MainMenu();
@@ -349,7 +433,53 @@ namespace OBSExtension
                     Styling("Team Management");
                     MainTeamMenu();
                 }
+                void Analysis()
+                {
+                    int YourTeam = int.Parse(File.ReadAllText(HomeScore));
+                    void AvgPntsQuarter(int points, int quarter)
+                    {
+                        void WriteFile(string file)
+                        {
+                            decimal cac = decimal.Divide(points,quarter);
+                            if (YourTeam <= 0)
+                            {
+                                Console.WriteLine("Something Went Wrong - Can't Be Divided By 0");
+                                Analysis();
+                            }
+                            else
+                            {
+                                StreamWriter stream;
+                                stream = File.CreateText(file);
+                                stream.WriteLine(String.Format("{0:0.00}",  cac));
+                                stream.Close();
+                            }
+                            
+                        }
+                        WriteFile(PerQuarter);
+                        Console.WriteLine(File.ReadAllText(PerQuarter));
+                    }
+                    Console.WriteLine("---------------------");
+                    Console.WriteLine("| Avg Points | Exit |");
+                    Console.WriteLine("---------------------");
+                    var read = Console.ReadLine();
+                    if (read == "Avg Points")
+                    {
+                        Console.WriteLine("-----------");
+                        Console.WriteLine("| Quarter |");
+                        Console.WriteLine("-----------");
+                        var change = Console.ReadLine();
+                        if (change == "Quarter")
+                        {
+                            AvgPntsQuarter(YourTeam,int.Parse(File.ReadAllText(QuarterFile)));
+                            Analysis();
+                        }
+                    }
 
+                    if (read == "Exit")
+                    {
+                        MainMenu();
+                    }
+                }
                 void Settings()
                 {
                     void PrintScript(string file)
@@ -406,9 +536,9 @@ namespace OBSExtension
                     MainMenuSettings();
                 }
                 Styling("Main Menu");
-                Console.WriteLine("---------------------------------------------");
-                Console.WriteLine("| Score | Team Management | Settings | Exit |");
-                Console.WriteLine("---------------------------------------------");
+                Console.WriteLine("--------------------------------------------------------");
+                Console.WriteLine("| Score | Team Management | Analysis | Settings | Exit |");
+                Console.WriteLine("--------------------------------------------------------");
                 var MainMenuInput = Console.ReadLine();
                 if (MainMenuInput == "Score")
                 {
@@ -420,6 +550,10 @@ namespace OBSExtension
                     TeamManagement();
                 }
 
+                if (MainMenuInput == "Analysis")
+                {
+                    Analysis();
+                }
                 if (MainMenuInput == "Settings")
                 {
                     Settings();
@@ -491,12 +625,28 @@ namespace OBSExtension
                                     Switches();
                                 }
                             }
-                    
+                            void CheckPrintTimeoutSwitch()
+                            {
+                                Console.WriteLine(File.ReadAllText(CheckScoreOnOff));
+                                Console.WriteLine("----------");
+                                Console.WriteLine("| Change |");
+                                Console.WriteLine("----------");
+                                var change = Console.ReadLine();
+                                if (change == "Yes")
+                                {
+                                    Alternate(PrintScoreTimeoutOnOff,File.ReadAllText(PrintScoreTimeoutOnOff));
+                                }
+        
+                                if (change == "No")
+                                {
+                                    Switches();
+                                }
+                            }
                             void SwitchesMainMenu()
                             {
-                                Console.WriteLine("------------------------------");
-                                Console.WriteLine("| Print | Check Score | Exit |");
-                                Console.WriteLine("------------------------------");
+                                Console.WriteLine("--------------------------------------------");
+                                Console.WriteLine("| Print | Check Score | Print Score | Exit |");
+                                Console.WriteLine("--------------------------------------------");
                                 var input = Console.ReadLine();
                                 if (input == "Print")
                                 {
@@ -509,7 +659,11 @@ namespace OBSExtension
                                     CheckScoreSwitch();
                                     SwitchesMainMenu();
                                 }
-        
+
+                                if (input == "Print Score")
+                                {
+                                    CheckPrintTimeoutSwitch();
+                                }
                                 if (input == "Exit")
                                 {
                                     Menu();
@@ -554,10 +708,21 @@ namespace OBSExtension
                                         stream.Close();
                                     }
                                 }
+
+                                if (file == PrintScoreTimeout)
+                                {
+                                    if (FileText <= 20)
+                                    {
+                                        StreamWriter stream;
+                                        stream = File.CreateText(file);
+                                        stream.WriteLine(FileText);
+                                        stream.Close();
+                                    }
+                                }
                             }
-                            Console.WriteLine("-----------------------------------------------");
-                            Console.WriteLine("| Quarter | Max Score | Max Difference | Exit |");
-                            Console.WriteLine("-----------------------------------------------");
+                            Console.WriteLine("---------------------------------------------------------------");
+                            Console.WriteLine("| Quarter | Max Score | Max Difference | Print Timeout | Exit |");
+                            Console.WriteLine("---------------------------------------------------------------");
                             var input = Console.ReadLine();
                             if (input == "Quarter")
                             {
@@ -585,6 +750,15 @@ namespace OBSExtension
                                 Console.WriteLine("--------------------");
                                 var read = Console.ReadLine();
                                 Change(ScoreMaxDifference,read);
+                                ChangeMax();
+                            }
+                            if (input == "Print Timeout")
+                            {
+                                Console.WriteLine("--------------");
+                                Console.WriteLine("| Time Limit |");
+                                Console.WriteLine("--------------");
+                                var read = Console.ReadLine();
+                                Change(PrintScoreTimeout,read);
                                 ChangeMax();
                             }
                             if (input == "Exit")
