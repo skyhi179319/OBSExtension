@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
+
+
 namespace OBSExtension
 {
     class Program
@@ -174,6 +176,14 @@ namespace OBSExtension
             }
             void Styling(string section)
             {
+                LogSystem("Styling" + " - " + section);
+                if (section == "Timer")
+                {
+                    Console.Clear();
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor = ConsoleColor.DarkGreen;
+                    Console.Clear();
+                }
                 if (section == "Start Page")
                 {
                     Console.BackgroundColor = ConsoleColor.Red;
@@ -488,8 +498,7 @@ namespace OBSExtension
                         foreach (string line in lines)
                         {
                              Console.WriteLine(line);  
-                        }  
-                           
+                        }
                     }
                     bool PrintBool = bool.Parse(File.ReadAllText(PrintOnOff));
                     void Print(bool on)
@@ -542,20 +551,24 @@ namespace OBSExtension
                 var MainMenuInput = Console.ReadLine();
                 if (MainMenuInput == "Score")
                 {
+                    LogSystem("Score");
                     Scoring();
                 }
 
                 if (MainMenuInput == "Team Management")
                 {
+                    LogSystem("Team Management");
                     TeamManagement();
                 }
 
                 if (MainMenuInput == "Analysis")
                 {
+                    LogSystem("Analysis");
                     Analysis();
                 }
                 if (MainMenuInput == "Settings")
                 {
+                    LogSystem("Settings");
                     Settings();
                 }
                 if (MainMenuInput == "Exit")
@@ -588,6 +601,7 @@ namespace OBSExtension
                                     stream.WriteLine("true");
                                     stream.Close();
                                 }
+                                LogSystem("Developer Altered Settings");
                             }
         
                             void PrintSwitch()
@@ -719,6 +733,7 @@ namespace OBSExtension
                                         stream.Close();
                                     }
                                 }
+                                LogSystem("Developer Altered Settings");
                             }
                             Console.WriteLine("---------------------------------------------------------------");
                             Console.WriteLine("| Quarter | Max Score | Max Difference | Print Timeout | Exit |");
@@ -786,6 +801,109 @@ namespace OBSExtension
                     }
                     Menu();
                 }
+
+                void LCommand(bool enable)
+                {
+                    Styling("Timer");
+                    void PrintScript(string file)
+                    {
+                        string[] lines = File.ReadAllLines(file);
+                        foreach (string line in lines)
+                        {
+                            Thread.Sleep(125);
+                            Console.WriteLine(line);      
+                        }
+                    }
+
+                    if (enable == true)
+                    {
+                        Timing(true,5);
+                        PrintScript(LogFile);
+                        Timing(true,10);
+                        StartPage();
+                    }
+
+                    if (enable == false)
+                    {
+                        Timing(true,5);
+                        PrintScript(LogFile);
+                        Timing(true,10);
+                    }
+                }
+
+                void DCommand(bool enable)
+                {
+                    void PrintScript(string FileName,string file)
+                    {
+                        string text = File.ReadAllText(file);
+                        string fullText = FileName + " - " + text;
+                        Console.WriteLine(fullText);
+                        Timing(true,1);
+                    }
+                    Styling("Timer");
+                    if (enable == true)
+                    {
+                        Timing(true,5);
+                        PrintScript("CheckScore_On_Off",CheckScoreOnOff);
+                        PrintScript("Print_On_Of",PrintOnOff);
+                        PrintScript("Print_Score_Timeout",PrintScoreTimeout);
+                        PrintScript("Print_Score_Timeout_On_Off",PrintScoreTimeoutOnOff);
+                        PrintScript("Quarter_Max",QuarterMax);
+                        PrintScript("Score_Max",ScoreMax);
+                        PrintScript("Score_Max_Difference",ScoreMaxDifference);
+                        Timing(true,10);
+                        StartPage();
+                    }
+
+                    if (enable == false)
+                    {
+                        Timing(true,5);
+                        PrintScript("CheckScore_On_Off",CheckScoreOnOff);
+                        PrintScript("Print_On_Of",PrintOnOff);
+                        PrintScript("Print_Score_Timeout",PrintScoreTimeout);
+                        PrintScript("Print_Score_Timeout_On_Off",PrintScoreTimeoutOnOff);
+                        PrintScript("Quarter_Max",QuarterMax);
+                        PrintScript("Score_Max",ScoreMax);
+                        PrintScript("Score_Max_Difference",ScoreMaxDifference);
+                        Timing(true,10);
+                    }
+                }
+
+                void ACommand(bool enabled)
+                {
+                    LCommand(enabled);
+                    DCommand(enabled);
+                }
+
+                void InfoCommand(bool enable)
+                {
+                    void print(string text)
+                    {
+                        void centerText(String t)
+                        {
+                            Console.Write(new string(' ', (Console.WindowWidth - t.Length) / 2));
+                            Console.WriteLine(t);
+                        }
+                        centerText(text);
+                    }
+                    Styling("Timer");
+                    if (enable == true)
+                    {
+                        print("Created By Skyler Barr");
+                        Timing(true,1);
+                        print("Version 1.0");
+                        Timing(true,4);
+                        StartPage();
+                    }
+
+                    if (enable == false)
+                    {
+                        print("Created By Skyler Barr");
+                        Timing(true,1);
+                        print("Version 1.0");
+                        Timing(true,4);
+                    }
+                }
                 Styling("Start Page");
                 Console.WriteLine("---------------------------------");
                 Console.WriteLine("| Start | Developer Mode | Exit |");
@@ -795,20 +913,72 @@ namespace OBSExtension
                 {
                     MainMenu();
                 }
-
                 if (start == "Developer Mode")
                 {
                     DeveloperMode();
                 }
                 if (start == "Exit")
                 {
-                    Console.ReadKey();
+                    
+                }
+                if (start == "-S")
+                {
+                    MainMenu();
+                }
+                if (start == "-DM")
+                {
+                    DeveloperMode();
+                }
+                if (start == "-Ex")
+                {
+                    
+                }
+                if (start == "-L")
+                {
+                    LCommand(true);
+                }
+                if (start == "-D")
+                {
+                    DCommand(true);
+                }
+                if (start == "-A")
+                {
+                    ACommand(false);
+                    StartPage();
+                }
+                if (start == "-info")
+                {
+                    InfoCommand(true);
+                }
+            }
+            void StartTimer(bool enable, int sec, string text)
+            {
+                void centerText(String t)
+                {
+                    Console.Write(new string(' ', (Console.WindowWidth - t.Length) / 2));
+                    Console.WriteLine(t);
+                }
+                LogSystem("Timing Effect" + " - " + text);
+                Styling("Timer");
+                if (enable == true)
+                {
+                    centerText(text);
+                    Timing(enable,sec);
+                }
+
+                if (enable == false)
+                {
+                    centerText(text);
+                    Timing(enable,sec);
+                    Thread.Sleep(2000);
                 }
             }
             FileSystem();
             Admin();
             LogSystem("Program Has Started");
+            StartTimer(true,4,"Program Starting");
             StartPage();
+            StartTimer(true,8,"Program Ending");
             LogSystem("Program Has Ended");
         }
     }
