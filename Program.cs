@@ -1,8 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
-
-
 namespace OBSExtension
 {
     class Program
@@ -26,7 +24,6 @@ namespace OBSExtension
             string PrintScoreTimeoutOnOff = @"C:\Users/" + basename + "/OBS/System/Settings/Print_Score_Timeout_On_Off.txt";
             string ScoreMaxDifference = @"C:\Users/" + basename + "/OBS/System/Settings/Score_Max_Difference.txt";
             string PerQuarter = @"C:\Users/" + basename + "/OBS/Analysis/Points_Average_Per_Quarter.Analysis";
-
             void Timing(bool enabled,int secs)
             {
                 if (enabled == true)
@@ -801,7 +798,6 @@ namespace OBSExtension
                     }
                     Menu();
                 }
-
                 void LCommand(bool enable)
                 {
                     Styling("Timer");
@@ -830,7 +826,6 @@ namespace OBSExtension
                         Timing(true,10);
                     }
                 }
-
                 void DCommand(bool enable)
                 {
                     void PrintScript(string FileName,string file)
@@ -868,13 +863,6 @@ namespace OBSExtension
                         Timing(true,10);
                     }
                 }
-
-                void ACommand(bool enabled)
-                {
-                    LCommand(enabled);
-                    DCommand(enabled);
-                }
-
                 void InfoCommand(bool enable)
                 {
                     void print(string text)
@@ -892,6 +880,8 @@ namespace OBSExtension
                         print("Created By Skyler Barr");
                         Timing(true,1);
                         print("Version 1.0");
+                        Timing(true,1);
+                        print("Built For Semester Project");
                         Timing(true,4);
                         StartPage();
                     }
@@ -901,8 +891,16 @@ namespace OBSExtension
                         print("Created By Skyler Barr");
                         Timing(true,1);
                         print("Version 1.0");
+                        Timing(true,1);
+                        print("Built For Semester Project");
                         Timing(true,4);
                     }
+                }
+                void ACommand(bool enabled)
+                {
+                    InfoCommand(enabled);
+                    LCommand(enabled);
+                    DCommand(enabled);
                 }
                 Styling("Start Page");
                 Console.WriteLine("---------------------------------");
@@ -965,7 +963,6 @@ namespace OBSExtension
                     centerText(text);
                     Timing(enable,sec);
                 }
-
                 if (enable == false)
                 {
                     centerText(text);
@@ -973,11 +970,29 @@ namespace OBSExtension
                     Thread.Sleep(2000);
                 }
             }
+            void StartEnd(string text)
+            {
+                void centerText(String t)
+                {
+                    Console.Write(new string(' ', (Console.WindowWidth - t.Length) / 2));
+                    Console.WriteLine(t);
+                    LogSystem(t);
+                }
+                void main()
+                {
+                    Styling("Timer");
+                    centerText(text);
+                    Timing(true,5);
+                }
+                main();
+            }
             FileSystem();
             Admin();
             LogSystem("Program Has Started");
             StartTimer(true,4,"Program Starting");
+            StartEnd("Welcome To OBS Extension");
             StartPage();
+            StartEnd("Thank You For Using OBS Extension");
             StartTimer(true,8,"Program Ending");
             LogSystem("Program Has Ended");
         }
