@@ -936,7 +936,7 @@ namespace OBSExtension
                 }
                 void DCommand(bool enable)
                 {
-                    string filename = @"C:\Users/" + basename + "/OBS/System/UserID.UserIdInfo";
+                    string filename = @"C:\Users/" + basename + "/OBS/System/UserID.UserInfo";
 
                     void PrintScript(string FileName, string file)
                     {
