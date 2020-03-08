@@ -24,6 +24,7 @@ namespace OBSExtension
             string PrintScoreTimeoutOnOff = @"C:\Users/" + basename + "/OBS/System/Settings/Print_Score_Timeout_On_Off.txt";
             string ScoreMaxDifference = @"C:\Users/" + basename + "/OBS/System/Settings/Score_Max_Difference.txt";
             string PerQuarter = @"C:\Users/" + basename + "/OBS/Analysis/Points_Average_Per_Quarter.Analysis";
+            // functions
             void Timing(bool enabled,int secs)
             {
                 if (enabled == true)
@@ -148,6 +149,30 @@ namespace OBSExtension
                         Directory.CreateDirectory(directory);
                     }
                 }
+                void UserId()
+                {
+                    string filename = @"C:\Users/" + basename + "/OBS/System/UserID.UserInfo";
+                    void IdInfo()
+                    {
+                        void id(string file, int one, int two, int three, int four)
+                        {
+                            if (!File.Exists(file))
+                            {
+                                StreamWriter stream;
+                                stream = File.CreateText(file);
+                                stream.Write(one + "-" + two + "-" + three + "-" + four);
+                                stream.Close();
+                            }
+                        }
+                        Random r = new Random();
+                        int one = r.Next(0, 9);
+                        int two = r.Next(10, 99);
+                        int three = r.Next(100, 999);
+                        int four = r.Next(1000, 9999);
+                        id(filename, one, two, three, four);
+                    }
+                    IdInfo();
+                }
                 CheckDirectories(@"C:\Users/" + basename + "/OBS");
                 CheckDirectories(@"C:\Users/" + basename + "/OBS/System");
                 CheckDirectories(@"C:\Users/" + basename + "/OBS/System/Logs");
@@ -161,6 +186,7 @@ namespace OBSExtension
                 CheckFile(HomeName);
                 CheckFile(AwayName);
                 CheckFile(QuarterFile);
+                UserId();
             }
             void LogSystem(string log)
             {
@@ -232,7 +258,6 @@ namespace OBSExtension
                             SetScore(HomeScore);
                             SetScore(AwayScore);
                         }
-
                         if (on == false)
                         {
                             
@@ -551,13 +576,11 @@ namespace OBSExtension
                     LogSystem("Score");
                     Scoring();
                 }
-
                 if (MainMenuInput == "Team Management")
                 {
                     LogSystem("Team Management");
                     TeamManagement();
                 }
-
                 if (MainMenuInput == "Analysis")
                 {
                     LogSystem("Analysis");
@@ -572,6 +595,81 @@ namespace OBSExtension
                 {
                     Console.ReadKey();
                 }
+            }
+            void StartTimer(bool enable, int sec, string text)
+            {
+                void centerText(String t)
+                {
+                    Console.Write(new string(' ', (Console.WindowWidth - t.Length) / 2));
+                    Console.WriteLine(t);
+                }
+                LogSystem("Timing Effect" + " - " + text);
+                Styling("Timer");
+                if (enable == true)
+                {
+                    centerText(text);
+                    Timing(enable,sec);
+                }
+                if (enable == false)
+                {
+                    centerText(text);
+                    Timing(enable,sec);
+                    Thread.Sleep(2000);
+                }
+            }
+            void StartEnd(string text)
+            {
+                void centerText(String t)
+                {
+                    Console.Write(new string(' ', (Console.WindowWidth - t.Length) / 2));
+                    Console.WriteLine(t);
+                    LogSystem(t);
+                }
+                void main()
+                {
+                    Styling("Timer");
+                    centerText(text);
+                    Timing(true,5);
+                }
+                main();
+            }
+            void LoggedIn()
+            {
+                string filename = @"C:\Users/" + basename + "/OBS/System/UserID.UserInfo";
+                string read = File.ReadAllText(filename);
+                void text(string text)
+                {
+                    void centerText(String t)
+                    {
+                        Console.Write(new string(' ', (Console.WindowWidth - t.Length) / 2));
+                        Console.WriteLine(t);
+                    }
+                    LogSystem(text);
+                    centerText(text);
+                    Timing(true,5);
+                }
+                Styling("Timer");
+                text("User Id: " + read);
+                LogSystem("User Logged In");
+            }
+            void LoggedOut()
+            {
+                string filename = @"C:\Users/" + basename + "/OBS/System/UserID.UserInfo";
+                string read = File.ReadAllText(filename);
+                void text(string text)
+                {
+                    void centerText(String t)
+                    {
+                        Console.Write(new string(' ', (Console.WindowWidth - t.Length) / 2));
+                        Console.WriteLine(t);
+                    }
+                    LogSystem(text);
+                    centerText(text);
+                    Timing(true,5);
+                }
+                Styling("Timer");
+                text("User Id: " + read);
+                LogSystem("User Logged Out");
             }
             void StartPage()
             {
@@ -600,7 +698,6 @@ namespace OBSExtension
                                 }
                                 LogSystem("Developer Altered Settings");
                             }
-        
                             void PrintSwitch()
                             {
                                 Console.WriteLine(File.ReadAllText(PrintOnOff));
@@ -610,15 +707,13 @@ namespace OBSExtension
                                 var change = Console.ReadLine();
                                 if (change == "Yes")
                                 {
-                                    Alternate(PrintOnOff,File.ReadAllText(PrintOnOff));
+                                    Alternate(PrintOnOff, File.ReadAllText(PrintOnOff));
                                 }
-        
                                 if (change == "No")
                                 {
                                     Switches();
                                 }
                             }
-        
                             void CheckScoreSwitch()
                             {
                                 Console.WriteLine(File.ReadAllText(CheckScoreOnOff));
@@ -628,9 +723,8 @@ namespace OBSExtension
                                 var change = Console.ReadLine();
                                 if (change == "Yes")
                                 {
-                                    Alternate(CheckScoreOnOff,File.ReadAllText(CheckScoreOnOff));
+                                    Alternate(CheckScoreOnOff, File.ReadAllText(CheckScoreOnOff));
                                 }
-        
                                 if (change == "No")
                                 {
                                     Switches();
@@ -645,14 +739,15 @@ namespace OBSExtension
                                 var change = Console.ReadLine();
                                 if (change == "Yes")
                                 {
-                                    Alternate(PrintScoreTimeoutOnOff,File.ReadAllText(PrintScoreTimeoutOnOff));
+                                    Alternate(PrintScoreTimeoutOnOff, File.ReadAllText(PrintScoreTimeoutOnOff));
                                 }
-        
+
                                 if (change == "No")
                                 {
                                     Switches();
                                 }
                             }
+
                             void SwitchesMainMenu()
                             {
                                 Console.WriteLine("--------------------------------------------");
@@ -664,7 +759,6 @@ namespace OBSExtension
                                     PrintSwitch();
                                     SwitchesMainMenu();
                                 }
-        
                                 if (input == "Check Score")
                                 {
                                     CheckScoreSwitch();
@@ -675,11 +769,13 @@ namespace OBSExtension
                                 {
                                     CheckPrintTimeoutSwitch();
                                 }
+
                                 if (input == "Exit")
                                 {
                                     Menu();
                                 }
                             }
+
                             SwitchesMainMenu();
                         }
 
@@ -709,6 +805,7 @@ namespace OBSExtension
                                         stream.Close();
                                     }
                                 }
+
                                 if (file == ScoreMaxDifference)
                                 {
                                     if (FileText <= 150)
@@ -730,8 +827,10 @@ namespace OBSExtension
                                         stream.Close();
                                     }
                                 }
+
                                 LogSystem("Developer Altered Settings");
                             }
+
                             Console.WriteLine("---------------------------------------------------------------");
                             Console.WriteLine("| Quarter | Max Score | Max Difference | Print Timeout | Exit |");
                             Console.WriteLine("---------------------------------------------------------------");
@@ -742,7 +841,7 @@ namespace OBSExtension
                                 Console.WriteLine("| Quarter Max |");
                                 Console.WriteLine("---------------");
                                 var read = Console.ReadLine();
-                                Change(QuarterMax,read);
+                                Change(QuarterMax, read);
                                 ChangeMax();
                             }
 
@@ -752,32 +851,36 @@ namespace OBSExtension
                                 Console.WriteLine("| Score Max |");
                                 Console.WriteLine("-------------");
                                 var read = Console.ReadLine();
-                                Change(ScoreMax,read);
+                                Change(ScoreMax, read);
                                 ChangeMax();
                             }
+
                             if (input == "Max Difference")
                             {
                                 Console.WriteLine("--------------------");
                                 Console.WriteLine("| Score Difference |");
                                 Console.WriteLine("--------------------");
                                 var read = Console.ReadLine();
-                                Change(ScoreMaxDifference,read);
+                                Change(ScoreMaxDifference, read);
                                 ChangeMax();
                             }
+
                             if (input == "Print Timeout")
                             {
                                 Console.WriteLine("--------------");
                                 Console.WriteLine("| Time Limit |");
                                 Console.WriteLine("--------------");
                                 var read = Console.ReadLine();
-                                Change(PrintScoreTimeout,read);
+                                Change(PrintScoreTimeout, read);
                                 ChangeMax();
                             }
+
                             if (input == "Exit")
                             {
                                 Menu();
                             }
                         }
+
                         Console.WriteLine("----------------------------------------");
                         Console.WriteLine("| Switches | Change Max | Main Program |");
                         Console.WriteLine("----------------------------------------");
@@ -791,76 +894,88 @@ namespace OBSExtension
                         {
                             ChangeMax();
                         }
+
                         if (input == "Main Program")
                         {
                             MainMenu();
                         }
                     }
+
                     Menu();
                 }
                 void LCommand(bool enable)
                 {
                     Styling("Timer");
+
                     void PrintScript(string file)
                     {
                         string[] lines = File.ReadAllLines(file);
                         foreach (string line in lines)
                         {
                             Thread.Sleep(125);
-                            Console.WriteLine(line);      
+                            Console.WriteLine(line);
                         }
                     }
 
                     if (enable == true)
                     {
-                        Timing(true,5);
+                        Timing(true, 5);
                         PrintScript(LogFile);
-                        Timing(true,10);
+                        LogSystem("Command Completed");
+                        Timing(true, 10);
                         StartPage();
                     }
 
                     if (enable == false)
                     {
-                        Timing(true,5);
+                        Timing(true, 5);
                         PrintScript(LogFile);
-                        Timing(true,10);
+                        LogSystem("Command Completed");
+                        Timing(true, 10);
                     }
                 }
                 void DCommand(bool enable)
                 {
-                    void PrintScript(string FileName,string file)
+                    string filename = @"C:\Users/" + basename + "/OBS/System/UserID.UserIdInfo";
+
+                    void PrintScript(string FileName, string file)
                     {
                         string text = File.ReadAllText(file);
                         string fullText = FileName + " - " + text;
                         Console.WriteLine(fullText);
-                        Timing(true,1);
+                        Timing(true, 1);
                     }
+
                     Styling("Timer");
                     if (enable == true)
                     {
-                        Timing(true,5);
-                        PrintScript("CheckScore_On_Off",CheckScoreOnOff);
-                        PrintScript("Print_On_Of",PrintOnOff);
-                        PrintScript("Print_Score_Timeout",PrintScoreTimeout);
-                        PrintScript("Print_Score_Timeout_On_Off",PrintScoreTimeoutOnOff);
-                        PrintScript("Quarter_Max",QuarterMax);
-                        PrintScript("Score_Max",ScoreMax);
-                        PrintScript("Score_Max_Difference",ScoreMaxDifference);
-                        Timing(true,10);
+                        Timing(true, 5);
+                        PrintScript("UserID", filename);
+                        PrintScript("CheckScore_On_Off", CheckScoreOnOff);
+                        PrintScript("Print_On_Of", PrintOnOff);
+                        PrintScript("Print_Score_Timeout", PrintScoreTimeout);
+                        PrintScript("Print_Score_Timeout_On_Off", PrintScoreTimeoutOnOff);
+                        PrintScript("Quarter_Max", QuarterMax);
+                        PrintScript("Score_Max", ScoreMax);
+                        PrintScript("Score_Max_Difference", ScoreMaxDifference);
+                        LogSystem("Command Completed");
+                        Timing(true, 10);
                         StartPage();
                     }
 
                     if (enable == false)
                     {
-                        Timing(true,5);
-                        PrintScript("CheckScore_On_Off",CheckScoreOnOff);
-                        PrintScript("Print_On_Of",PrintOnOff);
-                        PrintScript("Print_Score_Timeout",PrintScoreTimeout);
-                        PrintScript("Print_Score_Timeout_On_Off",PrintScoreTimeoutOnOff);
-                        PrintScript("Quarter_Max",QuarterMax);
-                        PrintScript("Score_Max",ScoreMax);
-                        PrintScript("Score_Max_Difference",ScoreMaxDifference);
-                        Timing(true,10);
+                        Timing(true, 5);
+                        PrintScript("UserID", filename);
+                        PrintScript("CheckScore_On_Off", CheckScoreOnOff);
+                        PrintScript("Print_On_Of", PrintOnOff);
+                        PrintScript("Print_Score_Timeout", PrintScoreTimeout);
+                        PrintScript("Print_Score_Timeout_On_Off", PrintScoreTimeoutOnOff);
+                        PrintScript("Quarter_Max", QuarterMax);
+                        PrintScript("Score_Max", ScoreMax);
+                        PrintScript("Score_Max_Difference", ScoreMaxDifference);
+                        LogSystem("Command Completed");
+                        Timing(true, 10);
                     }
                 }
                 void InfoCommand(bool enable)
@@ -872,29 +987,109 @@ namespace OBSExtension
                             Console.Write(new string(' ', (Console.WindowWidth - t.Length) / 2));
                             Console.WriteLine(t);
                         }
+
                         centerText(text);
                     }
+
                     Styling("Timer");
                     if (enable == true)
                     {
                         print("Created By Skyler Barr");
-                        Timing(true,1);
+                        Timing(true, 1);
                         print("Version 1.0");
-                        Timing(true,1);
+                        Timing(true, 1);
                         print("Built For Semester Project");
-                        Timing(true,4);
+                        LogSystem("Command Completed");
+                        Timing(true, 4);
                         StartPage();
                     }
 
                     if (enable == false)
                     {
                         print("Created By Skyler Barr");
-                        Timing(true,1);
+                        Timing(true, 1);
                         print("Version 1.0");
-                        Timing(true,1);
+                        Timing(true, 1);
                         print("Built For Semester Project");
-                        Timing(true,4);
+                        LogSystem("Command Completed");
+                        Timing(true, 4);
                     }
+                }
+                void ClearL(string text)
+                {
+                    void Clear(string file)
+                    {
+                        StreamWriter stream;
+                        stream = File.CreateText(file);
+                        stream.Close();
+                    }
+
+                    void centerText(String t)
+                    {
+                        Console.Write(new string(' ', (Console.WindowWidth - t.Length) / 2));
+                        Console.WriteLine(t);
+                    }
+                    Styling("Timer");
+                    Clear(LogFile);
+                    centerText(text);
+                    Console.Beep(800,200);
+                    Timing(true, 5);
+                    LogSystem("Program Has Started");
+                    StartTimer(true, 4, "Program Starting");
+                    StartEnd("Welcome To OBS Extension");
+                    LoggedIn();
+                    StartPage();
+                }
+                void ResetId()
+                {
+                    void ResetUserId()
+                    {
+                        string filename = @"C:\Users/" + basename + "/OBS/System/UserID.UserInfo";
+                        void IdInfo()
+                        {
+                            void id(string file, int one, int two, int three, int four)
+                            {
+                                StreamWriter stream;
+                                stream = File.CreateText(file);
+                                stream.Write(one + "-" + two + "-" + three + "-" + four);
+                                stream.Close();
+                            }
+                            Random r = new Random();
+                            int one = r.Next(0, 9);
+                            int two = r.Next(10, 99);
+                            int three = r.Next(100, 999);
+                            int four = r.Next(1000, 9999);
+                            id(filename, one, two, three, four);
+                        }
+                        void centerText(String t)
+                        {
+                            Console.Write(new string(' ', (Console.WindowWidth - t.Length) / 2));
+                            Console.WriteLine(t);
+                        }
+                        Styling("Timer");
+                        IdInfo();
+                        string read = File.ReadAllText(filename);
+                        string text = "Your New User Id Is: " + read;
+                        centerText(text);
+                        Timing(true,3);
+                        LogSystem("Resetting User Id To: " + read);
+                        Timing(true,5);
+                    }
+                    ResetUserId();
+                }
+                void ReadUser()
+                {
+                    void centerText(String t)
+                    {
+                        Console.Write(new string(' ', (Console.WindowWidth - t.Length) / 2));
+                        Console.WriteLine(t);
+                        LogSystem(t);
+                    }
+                    Styling("Timer");
+                    string filename = @"C:\Users/" + basename + "/OBS/System/UserID.UserInfo";
+                    string read = File.ReadAllText(filename);
+                    centerText("User Id: " + read);
+                    Timing(true,4);
                 }
                 void ACommand(bool enabled)
                 {
@@ -948,50 +1143,30 @@ namespace OBSExtension
                 {
                     InfoCommand(true);
                 }
-            }
-            void StartTimer(bool enable, int sec, string text)
-            {
-                void centerText(String t)
+                if (start == "-LClear")
                 {
-                    Console.Write(new string(' ', (Console.WindowWidth - t.Length) / 2));
-                    Console.WriteLine(t);
+                    ClearL("Cleared File - Must Auto-Restart");
                 }
-                LogSystem("Timing Effect" + " - " + text);
-                Styling("Timer");
-                if (enable == true)
+                if (start == "-Id")
                 {
-                    centerText(text);
-                    Timing(enable,sec);
+                    ReadUser();
+                    StartPage();
                 }
-                if (enable == false)
+                if (start == "-ResetId")
                 {
-                    centerText(text);
-                    Timing(enable,sec);
-                    Thread.Sleep(2000);
+                    ResetId();
+                    StartPage();
                 }
             }
-            void StartEnd(string text)
-            {
-                void centerText(String t)
-                {
-                    Console.Write(new string(' ', (Console.WindowWidth - t.Length) / 2));
-                    Console.WriteLine(t);
-                    LogSystem(t);
-                }
-                void main()
-                {
-                    Styling("Timer");
-                    centerText(text);
-                    Timing(true,5);
-                }
-                main();
-            }
+            // Called Functions
             FileSystem();
             Admin();
             LogSystem("Program Has Started");
             StartTimer(true,4,"Program Starting");
             StartEnd("Welcome To OBS Extension");
+            LoggedIn();
             StartPage();
+            LoggedOut();
             StartEnd("Thank You For Using OBS Extension");
             StartTimer(true,8,"Program Ending");
             LogSystem("Program Has Ended");
