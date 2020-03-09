@@ -766,13 +766,11 @@ namespace OBSExtension
                                 {
                                     Alternate(PrintScoreTimeoutOnOff, File.ReadAllText(PrintScoreTimeoutOnOff));
                                 }
-
                                 if (change == "No")
                                 {
                                     Switches();
                                 }
                             }
-
                             void SwitchesMainMenu()
                             {
                                 Console.WriteLine("--------------------------------------------");
@@ -789,21 +787,17 @@ namespace OBSExtension
                                     CheckScoreSwitch();
                                     SwitchesMainMenu();
                                 }
-
                                 if (input == "Print Score")
                                 {
                                     CheckPrintTimeoutSwitch();
                                 }
-
                                 if (input == "Exit")
                                 {
                                     Menu();
                                 }
                             }
-
                             SwitchesMainMenu();
                         }
-
                         void ChangeMax()
                         {
                             void Change(string file, string max)
@@ -819,7 +813,6 @@ namespace OBSExtension
                                         stream.Close();
                                     }
                                 }
-
                                 if (file == ScoreMax)
                                 {
                                     if (FileText <= 200)
@@ -974,8 +967,12 @@ namespace OBSExtension
                     Styling("Timer");
                     if (enable == true)
                     {
+                        string LoggedInFile = @"C:\Users/" + basename + "/OBS/System/LoggedIn.UserInfo";
+                        string LoggedOutFile = @"C:\Users/" + basename + "/OBS/System/LoggedOut.UserInfo";
                         Timing(true, 5);
                         PrintScript("UserID", filename);
+                        PrintScript("LoggedIn",LoggedInFile);
+                        PrintScript("LoggedOut",LoggedOutFile);
                         PrintScript("CheckScore_On_Off", CheckScoreOnOff);
                         PrintScript("Print_On_Of", PrintOnOff);
                         PrintScript("Print_Score_Timeout", PrintScoreTimeout);
@@ -987,11 +984,14 @@ namespace OBSExtension
                         Timing(true, 10);
                         StartPage();
                     }
-
                     if (enable == false)
                     {
+                        string LoggedInFile = @"C:\Users/" + basename + "/OBS/System/LoggedIn.UserInfo";
+                        string LoggedOutFile = @"C:\Users/" + basename + "/OBS/System/LoggedOut.UserInfo";
                         Timing(true, 5);
                         PrintScript("UserID", filename);
+                        PrintScript("LoggedIn",LoggedInFile);
+                        PrintScript("LoggedOut",LoggedOutFile);
                         PrintScript("CheckScore_On_Off", CheckScoreOnOff);
                         PrintScript("Print_On_Of", PrintOnOff);
                         PrintScript("Print_Score_Timeout", PrintScoreTimeout);
