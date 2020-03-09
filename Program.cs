@@ -633,6 +633,29 @@ namespace OBSExtension
                 }
                 main();
             }
+            void TimeStampInOut(string option)
+            {
+                string LoggedInFile = @"C:\Users/" + basename + "/OBS/System/LoggedIn.UserInfo";
+                CheckFile(LoggedInFile);
+                string LoggedOutFile = @"C:\Users/" + basename + "/OBS/System/LoggedOut.UserInfo";
+                CheckFile(LoggedOutFile);
+                if (option == "Logged In")
+                {
+                    DateTime date = DateTime.Now;
+                    StreamWriter write;
+                    write = File.CreateText(LoggedInFile);
+                    write.WriteLine(option + " - " + date);
+                    write.Close();
+                }
+                if (option == "Logged Out")
+                {
+                    DateTime date = DateTime.Now;
+                    StreamWriter write;
+                    write = File.CreateText(LoggedOutFile);
+                    write.WriteLine(option + " - " + date);
+                    write.Close();
+                }
+            }
             void LoggedIn()
             {
                 string filename = @"C:\Users/" + basename + "/OBS/System/UserID.UserInfo";
@@ -650,6 +673,7 @@ namespace OBSExtension
                 }
                 Styling("Timer");
                 text("User Id: " + read);
+                TimeStampInOut("Logged In");
                 LogSystem("User Logged In");
             }
             void LoggedOut()
@@ -669,6 +693,7 @@ namespace OBSExtension
                 }
                 Styling("Timer");
                 text("User Id: " + read);
+                TimeStampInOut("Logged Out");
                 LogSystem("User Logged Out");
             }
             void StartPage()
@@ -1079,6 +1104,7 @@ namespace OBSExtension
                 }
                 void ReadUser()
                 {
+                    string filename = @"C:\Users/" + basename + "/OBS/System/UserID.UserInfo";
                     void centerText(String t)
                     {
                         Console.Write(new string(' ', (Console.WindowWidth - t.Length) / 2));
@@ -1086,7 +1112,6 @@ namespace OBSExtension
                         LogSystem(t);
                     }
                     Styling("Timer");
-                    string filename = @"C:\Users/" + basename + "/OBS/System/UserID.UserInfo";
                     string read = File.ReadAllText(filename);
                     centerText("User Id: " + read);
                     Timing(true,4);
